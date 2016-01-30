@@ -1,0 +1,62 @@
+WindowIcon.Hide » Hide Window Icon
+WindowIcon.Show » Show Window Icon
+WindowIcon.Set(Texture Var) » Change window icon (.ico only)(Texture Var Only)
+Font VarName = (Size/Number Var,Style/Text Var,Type/Text Var) » Saves a Font Var
+Draw.Text(Text Var Only,Font Var,Brush Var,Point Var/Number,Number) » Draw text on the screen with the appropriate Font and position
+TextToNumber(Text Var Only,Number Var Only) » turn a Text Var to a new or existing Number Var
+NumberToText(Number Var Only,Text Var Onlt) » turn a Number Var to a new or existing Text Var
+Draw.FilledRectangle(Position X/Number/Point,Position Y/Number/Point,Size X/Number,Size Y/Number,Brush Var)
+Texture(Images/Text Var/Text) » Saves a image to a Texture Var
+Draw.FilledTextureRectangle(Position X/Number/Point,Position Y/Number/Point,Size X/Number,Size Y/Number,Brush Var)
+Brush BrushName = Opacity Red Green Blue
+PointList PointListName = Points
+WaitForKey.Key » waits for a key, example WaitForKey.A, waits for A to be pressed
+TakeScreenShot.All » Takes a screenshot of the screen 
+TakeScreenShot.Window » Takes a screenshot of the current window
+StopDraw » Stops the program and draws
+WindowBorder.Hide
+WindowBorder.Show
+CloseWindow
+AboutCodeArt
+WindowTitle(Text)
+/<     >\ » Multi Line comment
+// » Single line coment
+CutText(Text Var Only,Start Posision, Range) » saves text on Text Var
+CutText(Text Var Only,Start Posision, Range,Text to save) » saves text on other Text Var
+GetScreenResolution.Width(Number Var Only)
+GetScreenResolution.Height(Number Var Only)
+WindowSize.Width(Number) » Set window size, max 1800
+WindowSize.Height(Number) » Set window size, max 1800
+GetTextLenght(Text Var Only,Number Var) » Text Lenght to a new or existing Number Var
+InputWindow(Input text/Text Var,Window Name/Text) » saves input on a Text var
+GetCalender.Day(Number Var Only) » save day number on a Number Var
+GetCalender.Year(Number Var Only)
+GetCalender.Month(Number Var Only)
+GetTime.Second(Number Var Only)
+GetTime.Minute(Number Var Only)
+GetTime.Hour(Number Var Only)
+GetPixelColor(Position X/Number/Point,Position Y/Number/Point,Opacity/Number,Red/Number,Green/Number,Blue/Number)
+RandomNumber(Number Var,Min/Number,Max/Number)
+Point PointName = (X/Number,Y/Number)
+If » Compare values 
+EndIf
+== =/= <= >= < > Numeric NotNumeric » Operators for If
+++Number Var 
+--Number Var 
+Number NumberName = Number » calculates and saves values on Number Vars
+Text TextName = Text » operates text ans save values on Text Vars
+Repet(Number,Repet Name) 
+EndRepet(Repet Name)
+Pause(Number) » waits X milliseconds
+Draw.Image(Number,Number/Point,Texture Var)
+Draw.Background(Opacity/Number,Red/Number,Green/Number,Blue/Number) OR (Brush Var)
+ClearDraw
+Pen PenName = Opacity/Number,Red/Number,Green/Number,Blue/Number,Size/Number
+JumpTo Number » go to a line
+MessageWindow Text/Number 
+Draw.Line(NumberX,NumberY,NumberX,NumberY(or Point,Point),Pen)
+Draw.MultiLines(PointList,Pen)
+Draw.CurvedLine(PointList,Pen)
+Draw.Elipse(CenterX/Number,CenterY/Number(Or Point),length/Number,height/Number)
+FillPoint NumberX,NumberY(Or point),Brush,Brush)
+Draw.Rectangle((Position X/Number/Point,Position Y/Number/Point,Size X/Number,Size Y/Number,Pen)

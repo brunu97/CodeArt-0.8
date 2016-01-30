@@ -1,0 +1,4 @@
+Text k = 25
+If k Numeric 
+MessageWindow Yes!
+EndIf

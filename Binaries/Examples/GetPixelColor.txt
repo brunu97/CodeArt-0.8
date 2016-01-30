@@ -1,0 +1,4 @@
+Pen p = 255 78 78 78 10
+Draw.Rectangle 5 5 80 80 p
+GetPixelColor(6,6,a,d,f,g)
+MessageWindow a

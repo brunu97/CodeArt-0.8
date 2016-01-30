@@ -1,0 +1,7 @@
+Text example = A Simple Thing
+CutText(example,2,6)
+MessageWindow example
+
+Text example2 = A Simple Thing
+CutText(example2,7,5,other)
+MessageWindow other

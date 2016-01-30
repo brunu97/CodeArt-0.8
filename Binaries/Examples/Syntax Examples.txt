@@ -1,0 +1,10 @@
+//All commands can be written in two ways
+
+Text k = 25
+TextToNumber k i
+MessageWindow i
+
+//Or
+
+TextToNumber(k,m)
+MessageWindow m

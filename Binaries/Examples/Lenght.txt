@@ -1,0 +1,3 @@
+Text x =123456789
+GetTextLenght(x,size)
+MessageWindow size

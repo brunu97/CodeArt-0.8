@@ -1,0 +1,5 @@
+//Simple Input Window
+InputWindow(TextName,What is your name?)
+
+Text x = Your Name is TextName
+MessageWindow x

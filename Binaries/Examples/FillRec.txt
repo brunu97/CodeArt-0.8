@@ -1,0 +1,11 @@
+Brush p = 255 45 45 45
+Draw.FilledRectangle(25,25,200,200,p)
+
+//With out ( ) and ,
+Brush k = 125 10 25 69
+Draw.FilledRectangle 250 200 200 200 k
+
+//With a point 
+Point a = 90 290
+Brush m = 125 88 85 29
+Draw.FilledRectangle a 50 50 k

@@ -1,0 +1,5 @@
+Font font = 16 Bold Calligraphic
+Brush color = 255 20 205 215
+Text frase = CodeArt BASIC!
+Point p = 25 25
+Draw.Text frase font color p

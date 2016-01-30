@@ -1,0 +1,5 @@
+Number x = 0
+Repet(r,7)
+++x
+MessageWindow x
+EndRepet r

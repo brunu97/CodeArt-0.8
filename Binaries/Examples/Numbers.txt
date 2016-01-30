@@ -1,0 +1,28 @@
+Number x = 25
+++x
+MessageWindow x
+
+//-----------------------
+
+Number k = 25 + 25
+MessageWindow k
+
+//--------------------------
+
+Number j = k + x * 2
+MessageWindow j
+
+
+
+//------------------------
+
+Number i = 10
+Number i = 25
+MessageWindow i
+
+//--------------------------
+
+Number abc = 100
+Number zxc = 150
+Number total = abc + zxc 
+MessageWindow total

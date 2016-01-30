@@ -1,0 +1,3 @@
+Pen ax = 255 25 25 25 4
+Point y = 25 25
+Draw.Rectangle(y,25,25,ax)

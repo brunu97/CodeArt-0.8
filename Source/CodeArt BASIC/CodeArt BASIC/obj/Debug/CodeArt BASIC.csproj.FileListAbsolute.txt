@@ -1,0 +1,12 @@
+C:\Users\Bruno\Documents\Visual Studio 2013\Projects\CodeArt BASIC\CodeArt BASIC\bin\Debug\CodeArt BASIC.exe.config
+C:\Users\Bruno\Documents\Visual Studio 2013\Projects\CodeArt BASIC\CodeArt BASIC\bin\Debug\CodeArt BASIC.exe
+C:\Users\Bruno\Documents\Visual Studio 2013\Projects\CodeArt BASIC\CodeArt BASIC\bin\Debug\CodeArt BASIC.pdb
+C:\Users\Bruno\Documents\Visual Studio 2013\Projects\CodeArt BASIC\CodeArt BASIC\obj\Debug\CodeArt BASIC.csprojResolveAssemblyReference.cache
+C:\Users\Bruno\Documents\Visual Studio 2013\Projects\CodeArt BASIC\CodeArt BASIC\obj\Debug\CodeArt_BASIC.Form1.resources
+C:\Users\Bruno\Documents\Visual Studio 2013\Projects\CodeArt BASIC\CodeArt BASIC\obj\Debug\CodeArt_BASIC.Properties.Resources.resources
+C:\Users\Bruno\Documents\Visual Studio 2013\Projects\CodeArt BASIC\CodeArt BASIC\obj\Debug\CodeArt BASIC.csproj.GenerateResource.Cache
+C:\Users\Bruno\Documents\Visual Studio 2013\Projects\CodeArt BASIC\CodeArt BASIC\obj\Debug\CodeArt BASIC.exe
+C:\Users\Bruno\Documents\Visual Studio 2013\Projects\CodeArt BASIC\CodeArt BASIC\obj\Debug\CodeArt BASIC.pdb
+C:\Users\Bruno\Documents\Visual Studio 2013\Projects\CodeArt BASIC\CodeArt BASIC\obj\Debug\CodeArt_BASIC.MessageWindow.resources
+C:\Users\Bruno\Documents\Visual Studio 2013\Projects\CodeArt BASIC\CodeArt BASIC\obj\Debug\CodeArt_BASIC.Tecla.resources
+C:\Users\Bruno\Documents\Visual Studio 2013\Projects\CodeArt BASIC\CodeArt BASIC\obj\Debug\CodeArt_BASIC.InputBoxcs.resources

@@ -1,0 +1,11 @@
+Number x = 4
+Number k = 7
+If k == x 
+MessageWindow Ok A
+EndIf
+
+Text x = hj
+Text k = jh
+If k == x 
+MessageWindow Ok B
+EndIf

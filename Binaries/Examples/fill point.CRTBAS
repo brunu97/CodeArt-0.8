@@ -1,0 +1,7 @@
+Draw.Background 150 82 15 1
+Pen k = 255 255 255 255 50
+Draw.Line 10 98 255 247 k
+Point p = 200 200
+Brush k = 255 255 255 255
+Brush u = 147 55 36 100 
+FillPoint p k u
