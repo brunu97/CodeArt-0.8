@@ -1,62 +1,62 @@
-WindowIcon.Hide Â» Esconde a janela do Icon
-WindowIcon.Show Â» Mostra o icon da janela
-WindowIcon.Set(Texture Var) Â» Muda o icon da janela (.ico apenas)(Texture Var apenas)
-Font VarName = (Tamanho/Number Var,Estilo/Text Var,Ttipo/Text Var) Â» Grava uma fonte
-Draw.Text(Text Var Apenas,Font Var,Brush Var,Point Var/Number,Number) Â» Desenha texto na posiÃ§Ã£o X,Y
-TextToNumber(Text Var Apenas,Number Var Apenas) Â» Text para Number 
-NumberToText(Number Var Apenas,Text Var Apenas) Â» Number para Text
-Draw.FilledRectangle(PosiÃ§Ã£o X/Number/Point,PosiÃ§Ã£o  Y/Number/Point,Tamanho X/Number,Tamanho Y/Number,Brush Var)
-Texture(Images/Text Var/Text) Â» Grava uma imagem qualqur numa Texture Var
-Draw.FilledTextureRectangle(PosiÃ§Ã£o X/Number/Point,PosiÃ§Ã£o  Y/Number/Point,Tamanho X/Number,Tamanho Y/Number,Brush Var)
+WindowIcon.Hide » Esconde a janela do Icon
+WindowIcon.Show » Mostra o icon da janela
+WindowIcon.Set(Texture Var) » Muda o icon da janela (.ico apenas)(Texture Var apenas)
+Font VarName = (Tamanho/Number Var,Estilo/Text Var,Ttipo/Text Var) » Grava uma fonte
+Draw.Text(Text Var Apenas,Font Var,Brush Var,Point Var/Number,Number) » Desenha texto na posição X,Y
+TextToNumber(Text Var Apenas,Number Var Apenas) » Text para Number 
+NumberToText(Number Var Apenas,Text Var Apenas) » Number para Text
+Draw.FilledRectangle(Posição X/Number/Point,Posição  Y/Number/Point,Tamanho X/Number,Tamanho Y/Number,Brush Var)
+Texture(Images/Text Var/Text) » Grava uma imagem qualqur numa Texture Var
+Draw.FilledTextureRectangle(Posição X/Number/Point,Posição  Y/Number/Point,Tamanho X/Number,Tamanho Y/Number,Brush Var)
 Brush BrushName = Opacidade Vermelho Verde Azul
 PointList PointListName = Points
-WaitForKey.Key Â» espera por uma tecla por exemplo WaitForKey.A, isto vai esperar pela tecla A atÃ© ser carregada
-TakeScreenShot.All Â» tira uma imagem ao ecrÃ£ total
-TakeScreenShot.Window Â» Tira uma imagem apenas Ã¡ janela do programa em causa
-StopDraw Â» Para o programa e o desenho
+WaitForKey.Key » espera por uma tecla por exemplo WaitForKey.A, isto vai esperar pela tecla A até ser carregada
+TakeScreenShot.All » tira uma imagem ao ecrã total
+TakeScreenShot.Window » Tira uma imagem apenas á janela do programa em causa
+StopDraw » Para o programa e o desenho
 WindowBorder.Hide
 WindowBorder.Show
 CloseWindow
 AboutCodeArt
 WindowTitle(Text)
-/< >\ Â» ComentÃ¡rios de multi linha
-// Â» ComentÃ¡rio de linha Ãºnica
-CutText(Text Var Apenas,PosiÃ§Ã£o inicial, AlcanÃ§e) Â» grava o texto na mesma Text Var
-CutText(Text Var Apenas,PosiÃ§Ã£o Inicial, AlcanÃ§e,Var Text para gravar) Â» grava o texto em outra Text Var
+/< >\ » Comentários de multi linha
+// » Comentário de linha única
+CutText(Text Var Apenas,Posição inicial, Alcançe) » grava o texto na mesma Text Var
+CutText(Text Var Apenas,Posição Inicial, Alcançe,Var Text para gravar) » grava o texto em outra Text Var
 GetScreenResolution.Width(Number Var Apenas)
 GetScreenResolution.Height(Number Var Apenas)
-WindowSize.Width(Number) Â» Tamanho da janela, max 1800
-WindowSize.Height(Number) Â» tamanho da janela, max 1800
-GetTextLenght(Text Var Apenas,Number Var) Â» Comprimento do texto numa Text para um Number Var
-InputWindow(Input text/Text Var,Nome da Janela/Text) Â» Grava input numa Text Var
-GetCalender.Day(Number Var Apenas) Â» grava o dia em uma Number Var
+WindowSize.Width(Number) » Tamanho da janela, max 1800
+WindowSize.Height(Number) » tamanho da janela, max 1800
+GetTextLenght(Text Var Apenas,Number Var) » Comprimento do texto numa Text para um Number Var
+InputWindow(Input text/Text Var,Nome da Janela/Text) » Grava input numa Text Var
+GetCalender.Day(Number Var Apenas) » grava o dia em uma Number Var
 GetCalender.Year(Number Var Apenas)
 GetCalender.Month(Number Var Apenas)
 GetTime.Second(Number Var Apenas)
 GetTime.Minute(Number Var Apenas)
 GetTime.Hour(Number Var Apenas)
-GetPixelColor(PosiÃ§Ã£o X/Number/Point,PosiÃ§Ã£o Y/Number/Point,Opacidade/Number,Vermelho/Number,Verde/Number,Azul/Number)
+GetPixelColor(Posição X/Number/Point,Posição Y/Number/Point,Opacidade/Number,Vermelho/Number,Verde/Number,Azul/Number)
 RandomNumber(Number Var,Min/Number,Max/Number)
 Point PointName = (X/Number,Y/Number)
-If Â» Compara valores
-EndIf Â» termina a comparaÃ§Ã£o
-== =/= <= >= < > Numeric NotNumeric Â» Operadores para o If
-++Number Var Â» Aumenta em 1 uma Var
---Number Var Â» Reduz em 1 uma Var
-Number NumberName = Number Â» Calcula e defina Number Vars
-Text TextName = Texto Â» faz operaÃ§Ãµes de texto e grava texto em Text Var
+If » Compara valores
+EndIf » termina a comparação
+== =/= <= >= < > Numeric NotNumeric » Operadores para o If
+++Number Var » Aumenta em 1 uma Var
+--Number Var » Reduz em 1 uma Var
+Number NumberName = Number » Calcula e defina Number Vars
+Text TextName = Texto » faz operações de texto e grava texto em Text Var
 Repet(Number,Repet Nome)
 EndRepet(Repet Nome)
-Pause(Number) Â» Espera x milisegundos
+Pause(Number) » Espera x milisegundos
 Draw.Image(Number,Number/Point,Texture Var)
 Draw.Background(Opacidade/Number,Vermelho/Number,Verde/Number,Azul/Number) OU (Brush Var)
 ClearDraw
 Pen PenName = Opacidade/Number,Vermelho/Number,Verde/Number,Azul/Number,Tamanho/Number
-JumpTo Number Â» Vai para uma linha do cÃ³digo
+JumpTo Number » Vai para uma linha do código
 MessageWindow Text/Number
 Draw.Line(NumberX,NumberY,NumberX,NumberY(ou Point,Point),Pen)
 Draw.MultiLines(PointList,Pen)
 Draw.CurvedLine(PointList,Pen)
-Draw.Elipse(Centro X/Number,Centro Y/Number(Or Point),Comprimento/Number,Altura/Number, Pen)
+Draw.Elipse(Centro X/Number,Centro Y/Number(Or Point),Comprimento/Number,Altura/Number)
 FillPoint NumberX,NumberY(Ou point),Brush,Brush)
-Draw.Rectangle((Position X/Number/Point,PosiÃ§Ã£o Y/Number/Point,Tamanho X/Number,Size Y/Number,Pen)
+Draw.Rectangle((Position X/Number/Point,Posição Y/Number/Point,Tamanho X/Number,Size Y/Number,Pen)
