@@ -64,7 +64,9 @@ namespace CodeArt_BASIC
                 Graphics g = Graphics.FromImage(bmp);
                 pictureBox1.Image = bmp;
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-                
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+
                 //Conta Todas as Linhas
                 int linhas = richTextBox1.Lines.Count();
 
