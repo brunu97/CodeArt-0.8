@@ -57,6 +57,6 @@ MessageWindow Text/Number
 Draw.Line(NumberX,NumberY,NumberX,NumberY(or Point,Point),Pen)
 Draw.MultiLines(PointList,Pen)
 Draw.CurvedLine(PointList,Pen)
-Draw.Elipse(CenterX/Number,CenterY/Number(Or Point),length/Number,height/Number)
+Draw.Elipse(CenterX/Number,CenterY/Number(Or Point),length/Number,height/Number, Pen)
 FillPoint NumberX,NumberY(Or point),Brush,Brush)
 Draw.Rectangle((Position X/Number/Point,Position Y/Number/Point,Size X/Number,Size Y/Number,Pen)
