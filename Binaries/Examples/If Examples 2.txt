@@ -4,8 +4,8 @@ If k == x
 MessageWindow Ok A
 EndIf
 
-Text x = hj
-Text k = jh
-If k == x 
+Text a = hj
+Text b = jh
+If a == b 
 MessageWindow Ok B
 EndIf

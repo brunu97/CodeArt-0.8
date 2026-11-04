@@ -56,6 +56,8 @@ namespace CodeArt_BASIC
                 var TextureCodeArt = new Dictionary<string, string>();
 
                 Regex itens_x = new Regex(@"^\w+$"); //Não permite simbolos nos nomes de um Number,Point e Text e outros
+                Random aleatorio = new Random(); //Só um para todo o programa, senão os números repetem-se
+                int linhas_lidas = 0;
 
 
                 //Define campo de desenho
@@ -76,6 +78,16 @@ namespace CodeArt_BASIC
                     string linha = richTextBox1.Lines[topo];
                     string escrito = linha.TrimStart();
                     int linha_marcada = topo + 1; //Serve só para mostrar a linha visual atual de leitura
+
+                    //De vez em quando mostra o desenho e deixa a janela responder (Ciclos sem Pause)
+                    linhas_lidas++;
+                    if (linhas_lidas % 500 == 0)
+                    {
+                        pictureBox1.Refresh();
+                        Application.DoEvents();
+                        if (this.IsDisposed) { break; } //A janela foi fechada
+                    }
+
                     if (string.IsNullOrWhiteSpace(linha)) { continue; }
                     else if (escrito.StartsWith("WindowIcon.Hide"))
                     {
@@ -259,7 +271,7 @@ namespace CodeArt_BASIC
 
                                 Font k = FontVarCodeArt[valores[1]];
                                 string texto = TextVarCodeArt[valores[0]];
-                                Point p = PontosCodeArt[valores[3]];
+                                Point p = new Point(n1, n2);
                                 if (BrushCodeArt.ContainsKey(valores[2]))
                                 {
                                     string caneta_valor = BrushCodeArt[valores[2]];
@@ -287,35 +299,42 @@ namespace CodeArt_BASIC
                         }
                     }
                         else
-                    if (escrito.StartsWith("TextToNumber")) 
+                    if (escrito.StartsWith("TextToNumber"))
                     {
-                        string texto;
-                        escrito = escrito.Substring(12).Trim();
-                        escrito = escrito.Replace("(", "");
-                        escrito = escrito.Replace(")", "");
-                        escrito = escrito.Replace(",", " ");
-                        Regex regex = new Regex(@"[ ]{2,}", RegexOptions.None);
-                        escrito = regex.Replace(escrito, @" ");
-                        var valores = escrito.Trim().Split(' ');
+                        try
+                        {
+                            string texto;
+                            escrito = escrito.Substring(12).Trim();
+                            escrito = escrito.Replace("(", "");
+                            escrito = escrito.Replace(")", "");
+                            escrito = escrito.Replace(",", " ");
+                            Regex regex = new Regex(@"[ ]{2,}", RegexOptions.None);
+                            escrito = regex.Replace(escrito, @" ");
+                            var valores = escrito.Trim().Split(' ');
 
-                        if (valores.Length != 2)
+                            if (valores.Length != 2)
+                            {
+                                MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break;
+                            }
+
+                            if (!TextVarCodeArt.ContainsKey(valores[0]))
+                            {
+                                MessageBox.Show("Line: " + linha_marcada.ToString() + "\nThis Text does not exist", "CodeArt Error"); break;
+                            }
+                            else
+                            {
+                                texto = TextVarCodeArt[valores[0]];
+                            }
+                            if (valores[1].All(char.IsDigit)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Number should not only take numbers", "CodeArt Error"); break; }
+                            if (!itens_x.IsMatch(valores[1])) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Number can not have symbols", "CodeArt Error"); break; }
+                            if (NumberVarCodeAr.ContainsKey(valores[1])) { NumberVarCodeAr.Remove(valores[1]); }
+
+                            NumberVarCodeAr.Add(valores[1], Convert.ToInt32(texto));
+                        }
+                        catch
                         {
                             MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break;
                         }
-
-                        if (!TextVarCodeArt.ContainsKey(valores[0]))
-                        {
-                            MessageBox.Show("Line: " + linha_marcada.ToString() + "\nThis Number does not exist", "CodeArt Error"); break;
-                        }
-                        else
-                        {
-                            texto = TextVarCodeArt[valores[0]];
-                        }
-                        if (valores[1].All(char.IsDigit)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Text should not only take numbers", "CodeArt Error"); break; }
-                        if (!itens_x.IsMatch(valores[1])) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Text can not have symbols", "CodeArt Error"); break; }
-                        if (TextVarCodeArt.ContainsKey(valores[1])) { TextVarCodeArt.Remove(valores[1]); }
-
-                        NumberVarCodeAr.Add(valores[1], Convert.ToInt32(texto));
                     }
                     else
 
@@ -407,10 +426,10 @@ namespace CodeArt_BASIC
                                 primeiro = PontosCodeArt[valores[0]].X;
                                 segundo = PontosCodeArt[valores[0]].Y;
 
-                                if (NumberVarCodeAr.ContainsKey(valores[1])) { terceiro = NumberVarCodeAr[valores[2]]; }
+                                if (NumberVarCodeAr.ContainsKey(valores[1])) { terceiro = NumberVarCodeAr[valores[1]]; }
                                 else { terceiro = Convert.ToInt32(valores[1]); }
 
-                                if (NumberVarCodeAr.ContainsKey(valores[2])) { quarto = NumberVarCodeAr[valores[3]]; }
+                                if (NumberVarCodeAr.ContainsKey(valores[2])) { quarto = NumberVarCodeAr[valores[2]]; }
                                 else { quarto = Convert.ToInt32(valores[2]); }
 
                                 quinto = valores[3];
@@ -442,14 +461,15 @@ namespace CodeArt_BASIC
                     if (escrito.StartsWith("Texture"))
                     {
 
+                        if (!escrito.Contains("=")) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break; }
                         escrito = escrito.Substring(7).Trim();
                         string valor_escrito = escrito.Substring(escrito.LastIndexOf('=') + 1).Trim(); //Obtem o Valor da Textura
                         int tamanho_do_valor_escrito = valor_escrito.Length;
                         string Textura_nome = escrito.Substring(0, escrito.LastIndexOf('=')).Trim(); //Obtem o nome da Textura
 
-                        if (Textura_nome.Contains(" ") || string.IsNullOrWhiteSpace(Textura_nome)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Font can not be empty or contain spaces", "CodeArt Error"); break; } //Var não pode ter espaços
-                        if (Textura_nome.All(char.IsDigit)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Font should not only take numbers", "CodeArt Error"); break; }
-                        if (!itens_x.IsMatch(Textura_nome)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Font can not have symbols", "CodeArt Error"); break; }
+                        if (Textura_nome.Contains(" ") || string.IsNullOrWhiteSpace(Textura_nome)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Texture can not be empty or contain spaces", "CodeArt Error"); break; } //Var não pode ter espaços
+                        if (Textura_nome.All(char.IsDigit)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Texture should not only take numbers", "CodeArt Error"); break; }
+                        if (!itens_x.IsMatch(Textura_nome)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Texture can not have symbols", "CodeArt Error"); break; }
                         
                         if (TextureCodeArt.ContainsKey(Textura_nome))
                         {
@@ -511,10 +531,10 @@ namespace CodeArt_BASIC
                                 primeiro = PontosCodeArt[valores[0]].X;
                                 segundo = PontosCodeArt[valores[0]].Y;
 
-                                if (NumberVarCodeAr.ContainsKey(valores[1])) { terceiro = NumberVarCodeAr[valores[2]]; }
+                                if (NumberVarCodeAr.ContainsKey(valores[1])) { terceiro = NumberVarCodeAr[valores[1]]; }
                                 else { terceiro = Convert.ToInt32(valores[1]); }
 
-                                if (NumberVarCodeAr.ContainsKey(valores[2])) { quarto = NumberVarCodeAr[valores[3]]; }
+                                if (NumberVarCodeAr.ContainsKey(valores[2])) { quarto = NumberVarCodeAr[valores[2]]; }
                                 else { quarto = Convert.ToInt32(valores[2]); }
 
                                 quinto = valores[3];
@@ -539,7 +559,7 @@ namespace CodeArt_BASIC
                     else
                     if (escrito.StartsWith("AboutCodeArt"))
                     {
-                        MessageBox.Show("CodeArt BASIC 0.80\nMade By Bruno Silva\nDecember 2015");
+                        MessageBox.Show("CodeArt BASIC 0.85\nMade By Bruno Silva\nNovember 2026");
                         continue;
                     }
                     else
@@ -552,6 +572,7 @@ namespace CodeArt_BASIC
                         int vt_blue;
                         Regex regex = new Regex(@"[ ]{2,}", RegexOptions.None);
                         escrito = regex.Replace(escrito, @" ");
+                        if (!escrito.Contains("=")) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break; }
                         escrito = escrito.Substring(5);
 
                         int tamanho_total = escrito.Length;
@@ -625,6 +646,7 @@ namespace CodeArt_BASIC
 
 
                             string j = "";
+                            bool lista_valida = true;
                             for (int x = 0; x < compri; x++)
                             {
                                 if (valores[x].All(char.IsDigit))
@@ -647,10 +669,13 @@ namespace CodeArt_BASIC
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break; 
+                                    MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error");
+                                    lista_valida = false;
+                                    break;
                                 }
 
                             }
+                            if (lista_valida == false) { break; }
                             var pontos = j.Trim().Split(' ');
                             int quantos = pontos.Length / 2;
                             Point[] lista = new Point[quantos];
@@ -664,6 +689,7 @@ namespace CodeArt_BASIC
 
                             }
 
+                            if (ListaPontos.ContainsKey(var_nome)) { ListaPontos.Remove(var_nome); }
                             ListaPontos.Add(var_nome, lista);
                             continue;
                         }
@@ -680,51 +706,21 @@ namespace CodeArt_BASIC
                         char tecla = ' ';
                         string outratecla = " ";
                         bool tipo = false;
-                        if (escrito == ".Q") { tecla = 'q'; } else
-                        if (escrito == ".W") { tecla = 'w'; } else
-                        if (escrito == ".E") { tecla = 'e'; } else
-                        if (escrito == ".R") { tecla = 'r'; } else
-                        if (escrito == ".T") { tecla = 't'; } else
-                        if (escrito == ".Y") { tecla = 'y'; } else
-                        if (escrito == ".U") { tecla = 'u'; } else
-                        if (escrito == ".I") { tecla = 'i'; } else
-                        if (escrito == ".O") { tecla = 'o'; } else
-                        if (escrito == ".P") { tecla = 'p'; } else
-                        if (escrito == ".A") { tecla = 'a'; } else
-                        if (escrito == ".S") { tecla = 's'; } else
-                        if (escrito == ".D") { tecla = 'd'; } else
-                        if (escrito == ".F") { tecla = 'f'; } else
-                        if (escrito == ".G") { tecla = 'g'; } else
-                        if (escrito == ".H") { tecla = 'h'; } else
-                        if (escrito == ".J") { tecla = 'j'; } else
-                        if (escrito == ".K") { tecla = 'k'; } else
-                        if (escrito == ".L") { tecla = 'l'; } else
-                        if (escrito == ".Ç") { tecla = 'ç'; } else
-                        if (escrito == ".Z") { tecla = 'z'; } else
-                        if (escrito == ".X") { tecla = 'x'; } else
-                        if (escrito == ".C") { tecla = 'c'; } else
-                        if (escrito == ".V") { tecla = 'v'; } else
-                        if (escrito == ".B") { tecla = 'b'; } else
-                        if (escrito == ".N") { tecla = 'n'; } else
-                        if (escrito == ".M") { tecla = 'm'; } else
+                        string teclas_normais = "QWERTYUIOPASDFGHJKLÇZXCVBNM1234567890";
+
                         if (escrito == ".Enter") { outratecla = "ENTER"; tipo = true; } else
                         if (escrito == ".Space") { outratecla = "SPACE"; tipo = true; } else
                         if (escrito == ".Escape") { outratecla = "ESCAPE"; tipo = true; } else
-                        if (escrito == ".1") { tecla = '1'; } else
-                        if (escrito == ".2") { tecla = '2'; } else
-                        if (escrito == ".3") { tecla = '3'; } else
-                        if (escrito == ".4") { tecla = '4'; } else
-                        if (escrito == ".5") { tecla = '5'; } else
-                        if (escrito == ".6") { tecla = '6'; } else
-                        if (escrito == ".7") { tecla = '7'; } else
-                        if (escrito == ".8") { tecla = '8'; } else
-                        if (escrito == ".9") { tecla = '9'; } else
-                        if (escrito == ".0") { tecla = '0'; }
-                            else
-                            {
-                                MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break; 
-                            }
+                        if (escrito.Length == 2 && escrito[0] == '.' && teclas_normais.Contains(escrito[1]))
+                        {
+                            tecla = char.ToLowerInvariant(escrito[1]);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break;
+                        }
 
+                        pictureBox1.Refresh(); //Mostra o desenho antes de esperar pela tecla
                         Tecla tyu = new Tecla(tecla,tipo,outratecla);
                         tyu.ShowDialog();
                         continue;
@@ -733,6 +729,7 @@ namespace CodeArt_BASIC
                     if (escrito.StartsWith("TakeScreenShot"))
                     {
                         escrito = escrito.Substring(14).Trim();
+                        pictureBox1.Refresh(); //Mostra o desenho antes da imagem
                         if (escrito == ".All")
                         {
                             escrito = escrito.Substring(4);
@@ -754,7 +751,7 @@ namespace CodeArt_BASIC
                             {
                                 using (Graphics img = Graphics.FromImage(bitmap))
                                 {
-                                    img.CopyFromScreen(Point.Empty, Point.Empty, Screen.PrimaryScreen.Bounds.Size);
+                                    img.CopyFromScreen(this.Location, Point.Empty, this.Size);
                                 }
                                 bitmap.Save("Image.Png", ImageFormat.Png);
                                 continue;
@@ -799,6 +796,7 @@ namespace CodeArt_BASIC
                         else
                         {
                             System.Windows.Forms.Application.Exit();
+                            break;
                         }
 
                     }
@@ -963,10 +961,14 @@ namespace CodeArt_BASIC
                         }
                         else
                         {
-                            if (Convert.ToInt32(escrito) > 1800) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nWidth maximum is 1800", "CodeArt Error"); break; }
-                            pictureBox1.Width = Convert.ToInt32(escrito);
-                            this.Width = Convert.ToInt32(escrito);
-                            continue;
+                            try
+                            {
+                                if (Convert.ToInt32(escrito) > 1800) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nWidth maximum is 1800", "CodeArt Error"); break; }
+                                pictureBox1.Width = Convert.ToInt32(escrito);
+                                this.Width = Convert.ToInt32(escrito);
+                                continue;
+                            }
+                            catch { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break; }
                         }
 
 
@@ -989,10 +991,14 @@ namespace CodeArt_BASIC
                         }
                         else
                         {
-                            if (Convert.ToInt32(escrito) > 1800) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nHeight maximum is 1800", "CodeArt Error"); break; }
-                            pictureBox1.Height = Convert.ToInt32(escrito);
-                            this.Height = Convert.ToInt32(escrito);
-                            continue;
+                            try
+                            {
+                                if (Convert.ToInt32(escrito) > 1800) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nHeight maximum is 1800", "CodeArt Error"); break; }
+                                pictureBox1.Height = Convert.ToInt32(escrito);
+                                this.Height = Convert.ToInt32(escrito);
+                                continue;
+                            }
+                            catch { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break; }
                         }
 
 
@@ -1028,6 +1034,7 @@ namespace CodeArt_BASIC
                             else
                             {
                                 int tamanho = TextVarCodeArt[valores[0]].Trim().Length;
+                                NumberVarCodeAr.Remove(valores[1]);
                                 NumberVarCodeAr.Add(valores[1], tamanho);
                                 continue;
                             }
@@ -1054,6 +1061,7 @@ namespace CodeArt_BASIC
                             if (Text_Nome.All(char.IsDigit)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nUm nome para um Text não pode ter só números.", "CodeArt Error"); break; }
                             if (!itens_x.IsMatch(Text_Nome)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Text can not have symbols", "CodeArt Error"); break; }
                             if (TextVarCodeArt.ContainsKey(Texo_da_janela)) { Texo_da_janela = TextVarCodeArt[Texo_da_janela]; }
+                            pictureBox1.Refresh(); //Mostra o desenho antes da janela
                             InputBoxcs input = new InputBoxcs(Texo_da_janela,this.Text);
                             input.ShowDialog();
                             string total = input.Exporta;
@@ -1281,16 +1289,19 @@ namespace CodeArt_BASIC
                             if (valores[0].Contains(" ") || string.IsNullOrWhiteSpace(valores[0])) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Number can not be empty or contain spaces", "CodeArt Error"); break; }
                             if (valores[0].All(char.IsDigit)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Number should not only take numbers", "CodeArt Error"); break; }
                             if (!itens_x.IsMatch(valores[0])) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Number can not have symbols", "CodeArt Error"); break; }
-                            if (NumberVarCodeAr.ContainsKey(valores[0])) { NumberVarCodeAr.Remove(valores[0]); }
 
                             //Número minimo
-                            int minValor = Convert.ToInt32(valores[1]);
+                            int minValor;
+                            if (NumberVarCodeAr.ContainsKey(valores[1])) { minValor = NumberVarCodeAr[valores[1]]; }
+                            else { minValor = Convert.ToInt32(valores[1]); }
                             //Número Máximo
-                            int maxValor = Convert.ToInt32(valores[2]);
-                            //Escolhe
-                            Random x = new Random();
-                            int Vescolhido = x.Next(minValor, maxValor);
+                            int maxValor;
+                            if (NumberVarCodeAr.ContainsKey(valores[2])) { maxValor = NumberVarCodeAr[valores[2]]; }
+                            else { maxValor = Convert.ToInt32(valores[2]); }
+                            //Escolhe (O Next não inclui o máximo, por isso o + 1)
+                            int Vescolhido = aleatorio.Next(minValor, maxValor + 1);
 
+                            if (NumberVarCodeAr.ContainsKey(valores[0])) { NumberVarCodeAr.Remove(valores[0]); }
                             NumberVarCodeAr.Add(valores[0], Vescolhido);
                             continue;
                         }
@@ -1317,8 +1328,8 @@ namespace CodeArt_BASIC
                         string Pointo_nome = escrito.Substring(0, escrito.LastIndexOf('=')).Trim(); //Nome do Ponto
 
                         if (Pointo_nome.Contains(" ") ||(string.IsNullOrWhiteSpace(Pointo_nome)) ) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Point can not be empty or contain spaces", "CodeArt Error"); break; } 
-                        if (Pointo_nome.All(char.IsDigit)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Number should not only take numbers", "CodeArt Error"); break; }
-                        if (!itens_x.IsMatch(Pointo_nome)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Number can not have symbols", "CodeArt Error"); break; }
+                        if (Pointo_nome.All(char.IsDigit)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Point should not only take numbers", "CodeArt Error"); break; }
+                        if (!itens_x.IsMatch(Pointo_nome)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Point can not have symbols", "CodeArt Error"); break; }
 
 
                         //Se a Var já existe então remove para depois se adicionar de novo
@@ -1384,16 +1395,35 @@ namespace CodeArt_BASIC
                                 MessageBox.Show("Line: " + linha_marcada.ToString() + "\nThe If structure have the wrong comparison symbol.", "CodeArt Error"); break;
                             }
 
-                            //Obtem a linha onde termina a estrutura do If
+                            //Obtem a linha onde termina a estrutura do If (Conta os If que estão dentro deste If)
+                            int nivel_if = 0;
+                            bool comentario_if = false;
                             for (int dentroif = topo; dentroif < linhas; dentroif++)
                             {
 
                                 string linha_dentro = richTextBox1.Lines[dentroif].TrimStart();
+
+                                //O que está dentro de /< >\ não conta
+                                if (linha_dentro.StartsWith("/<")) { comentario_if = true; }
+                                if (comentario_if == true)
+                                {
+                                    if (linha_dentro.Contains(@">\")) { comentario_if = false; }
+                                    continue;
+                                }
+
                                 if (linha_dentro.StartsWith("EndIf"))
                                 {
-                                    endif = true;
-                                    endif_linha = dentroif;
-                                    break;
+                                    nivel_if--;
+                                    if (nivel_if == 0)
+                                    {
+                                        endif = true;
+                                        endif_linha = dentroif;
+                                        break;
+                                    }
+                                }
+                                else if (linha_dentro.StartsWith("If"))
+                                {
+                                    nivel_if++;
                                 }
                                 else
                                 {
@@ -1458,6 +1488,25 @@ namespace CodeArt_BASIC
                                     }
 
                                 }
+                                else if (TextVarCodeArt.ContainsKey(valores[0])) //Compara Text com texto escrito
+                                {
+
+                                    try
+                                    {
+                                        string texto_escrito = string.Join(" ", valores.Skip(2)).Trim();
+                                        if (TextVarCodeArt[valores[0].Trim()].Trim() == texto_escrito)
+                                        {
+                                            endif = false;
+                                            topo = linha_if;
+                                        }
+                                        else { endif = false; topo = endif_linha; }
+                                    }
+                                    catch
+                                    {
+                                        MessageBox.Show("Line: " + linha_marcada.ToString() + "\nIncorrect values", "CodeArt Error"); break;
+                                    }
+
+                                }
                                 else
                                 {
                                     MessageBox.Show("Line: " + linha_marcada.ToString() + "\nThere is no found values to compare", "CodeArt Error");
@@ -1484,6 +1533,26 @@ namespace CodeArt_BASIC
                                     try
                                     {
                                         if (NumberVarCodeAr[valores[0]] <= Convert.ToInt32(valores[2]))
+                                        {
+                                            endif = false;
+                                            topo = linha_if;
+                                        }
+                                        else { endif = false; topo = endif_linha; }
+                                    }
+                                    catch
+                                    {
+                                        MessageBox.Show("Line: " + linha_marcada.ToString() + "\nIncorrect values", "CodeArt Error"); break;
+                                    }
+
+                                }
+                                else if (TextVarCodeArt.ContainsKey(valores[0])) //Compara Text por ordem alfabética
+                                {
+
+                                    try
+                                    {
+                                        string texto_escrito = string.Join(" ", valores.Skip(2)).Trim();
+                                        if (TextVarCodeArt.ContainsKey(texto_escrito)) { texto_escrito = TextVarCodeArt[texto_escrito].Trim(); }
+                                        if (string.Compare(TextVarCodeArt[valores[0].Trim()].Trim(), texto_escrito) <= 0)
                                         {
                                             endif = false;
                                             topo = linha_if;
@@ -1550,6 +1619,25 @@ namespace CodeArt_BASIC
                                     }
 
                                 }
+                                else if (TextVarCodeArt.ContainsKey(valores[0])) //Compara Text com texto escrito
+                                {
+
+                                    try
+                                    {
+                                        string texto_escrito = string.Join(" ", valores.Skip(2)).Trim();
+                                        if (TextVarCodeArt[valores[0].Trim()].Trim() != texto_escrito)
+                                        {
+                                            endif = false;
+                                            topo = linha_if;
+                                        }
+                                        else { endif = false; topo = endif_linha; }
+                                    }
+                                    catch
+                                    {
+                                        MessageBox.Show("Line: " + linha_marcada.ToString() + "\nIncorrect values", "CodeArt Error"); break;
+                                    }
+
+                                }
                                 else
                                 {
                                     MessageBox.Show("Line: " + linha_marcada.ToString() + "\nThere is no found values to compare", "CodeArt Error");
@@ -1589,6 +1677,26 @@ namespace CodeArt_BASIC
                                     }
 
                                 }
+                                else if (TextVarCodeArt.ContainsKey(valores[0])) //Compara Text por ordem alfabética
+                                {
+
+                                    try
+                                    {
+                                        string texto_escrito = string.Join(" ", valores.Skip(2)).Trim();
+                                        if (TextVarCodeArt.ContainsKey(texto_escrito)) { texto_escrito = TextVarCodeArt[texto_escrito].Trim(); }
+                                        if (string.Compare(TextVarCodeArt[valores[0].Trim()].Trim(), texto_escrito) >= 0)
+                                        {
+                                            endif = false;
+                                            topo = linha_if;
+                                        }
+                                        else { endif = false; topo = endif_linha; }
+                                    }
+                                    catch
+                                    {
+                                        MessageBox.Show("Line: " + linha_marcada.ToString() + "\nIncorrect values", "CodeArt Error"); break;
+                                    }
+
+                                }
                                 else
                                 {
                                     MessageBox.Show("Line: " + linha_marcada.ToString() + "\nThere is no found values to compare", "CodeArt Error");
@@ -1616,6 +1724,26 @@ namespace CodeArt_BASIC
                                     try
                                     {
                                         if (NumberVarCodeAr[valores[0]] < Convert.ToInt32(valores[2]))
+                                        {
+                                            endif = false;
+                                            topo = linha_if;
+                                        }
+                                        else { endif = false; topo = endif_linha; }
+                                    }
+                                    catch
+                                    {
+                                        MessageBox.Show("Line: " + linha_marcada.ToString() + "\nIncorrect values", "CodeArt Error"); break;
+                                    }
+
+                                }
+                                else if (TextVarCodeArt.ContainsKey(valores[0])) //Compara Text por ordem alfabética
+                                {
+
+                                    try
+                                    {
+                                        string texto_escrito = string.Join(" ", valores.Skip(2)).Trim();
+                                        if (TextVarCodeArt.ContainsKey(texto_escrito)) { texto_escrito = TextVarCodeArt[texto_escrito].Trim(); }
+                                        if (string.Compare(TextVarCodeArt[valores[0].Trim()].Trim(), texto_escrito) < 0)
                                         {
                                             endif = false;
                                             topo = linha_if;
@@ -1687,6 +1815,26 @@ namespace CodeArt_BASIC
                                     try
                                     {
                                         if (NumberVarCodeAr[valores[0]] > Convert.ToInt32(valores[2]))
+                                        {
+                                            endif = false;
+                                            topo = linha_if;
+                                        }
+                                        else { endif = false; topo = endif_linha; }
+                                    }
+                                    catch
+                                    {
+                                        MessageBox.Show("Line: " + linha_marcada.ToString() + "\nIncorrect values", "CodeArt Error"); break;
+                                    }
+
+                                }
+                                else if (TextVarCodeArt.ContainsKey(valores[0])) //Compara Text por ordem alfabética
+                                {
+
+                                    try
+                                    {
+                                        string texto_escrito = string.Join(" ", valores.Skip(2)).Trim();
+                                        if (TextVarCodeArt.ContainsKey(texto_escrito)) { texto_escrito = TextVarCodeArt[texto_escrito].Trim(); }
+                                        if (string.Compare(TextVarCodeArt[valores[0].Trim()].Trim(), texto_escrito) > 0)
                                         {
                                             endif = false;
                                             topo = linha_if;
@@ -1779,11 +1927,52 @@ namespace CodeArt_BASIC
                             catch { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nError creating a loop, the value is not available or nonexistent", "CodeArt Error"); break; }
 
                             if (index_max > 2) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break; } //Limite de valores
-                            if (LoopNameCodeArt.ContainsKey(primeiro)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nThere is already a Repet with this name", "CodeArt Error"); break; }
+                            if (LoopNameCodeArt.ContainsKey(primeiro))
+                            {
+                                if (LoopNameCodeArt[primeiro] != topo) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nThere is already a Repet with this name", "CodeArt Error"); break; }
+
+                                //Saiu do Repet com JumpTo e voltou a entrar, começa de novo
+                                LoopvezesCodeArt.Remove(primeiro);
+                                LoopNameCodeArt.Remove(primeiro);
+                            }
                             if (primeiro.Contains(" ") || string.IsNullOrWhiteSpace(primeiro)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Repet can not be empty or contain spaces", "CodeArt Error"); break; }
                             
                             if (primeiro.All(char.IsDigit)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Repet should not only take numbers", "CodeArt Error"); break; }
                             if (!itens_x.IsMatch(primeiro)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Repet can not have symbols", "CodeArt Error"); break; }
+
+                            //Sem voltas para fazer salta para o EndRepet
+                            if (segundo <= 0)
+                            {
+                                bool endrepet = false;
+                                bool comentario_repet = false;
+                                for (int dentrorepet = topo; dentrorepet < linhas; dentrorepet++)
+                                {
+                                    string linha_dentro = richTextBox1.Lines[dentrorepet].TrimStart();
+
+                                    //O que está dentro de /< >\ não conta
+                                    if (linha_dentro.StartsWith("/<")) { comentario_repet = true; }
+                                    if (comentario_repet == true)
+                                    {
+                                        if (linha_dentro.Contains(@">\")) { comentario_repet = false; }
+                                        continue;
+                                    }
+
+                                    if (linha_dentro.StartsWith("EndRepet"))
+                                    {
+                                        linha_dentro = linha_dentro.Substring(8);
+                                        linha_dentro = linha_dentro.Replace(")", "");
+                                        linha_dentro = linha_dentro.Replace("(", "");
+                                        if (linha_dentro.Trim() == primeiro)
+                                        {
+                                            endrepet = true;
+                                            topo = dentrorepet;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (endrepet == false) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nThe Repet structure is not closed", "CodeArt Error"); break; }
+                                continue;
+                            }
 
                             LoopvezesCodeArt.Add(primeiro, segundo);
                             LoopNameCodeArt.Add(primeiro, topo);
@@ -1802,6 +1991,8 @@ namespace CodeArt_BASIC
                         try
                         {
                             escrito = escrito.Substring(8);
+                            escrito = escrito.Replace(")", "");
+                            escrito = escrito.Replace("(", "");
                             escrito = escrito.Trim();
 
                             if (escrito.Contains(" ") || string.IsNullOrWhiteSpace(escrito)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Repet can not be empty or contain spaces", "CodeArt Error"); break; }
@@ -1813,7 +2004,14 @@ namespace CodeArt_BASIC
                             {
                                 int esta_ln = linha_marcada - 1;
                                 LoopvezesCodeArt[escrito]--;
-                                if (LoopvezesCodeArt[escrito] == 0) { topo = esta_ln; continue; }
+                                if (LoopvezesCodeArt[escrito] == 0)
+                                {
+                                    //Remove o Repet para poder ser usado de novo (Repet dentro de Repet)
+                                    LoopvezesCodeArt.Remove(escrito);
+                                    LoopNameCodeArt.Remove(escrito);
+                                    topo = esta_ln;
+                                    continue;
+                                }
                                 topo = LoopNameCodeArt[escrito];
                             }
                             else
@@ -1840,16 +2038,24 @@ namespace CodeArt_BASIC
                         escrito = escrito.Replace("(", "");
                         try
                         {
-                            if (NumberVarCodeAr.ContainsKey(escrito)) { 
-                                tempo = NumberVarCodeAr[escrito]; 
-                                Thread.Sleep(tempo); 
-                                continue; }
-                            else
+                            if (NumberVarCodeAr.ContainsKey(escrito)) { tempo = NumberVarCodeAr[escrito]; }
+                            else { tempo = Convert.ToInt32(escrito); }
+                            if (tempo < 0) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break; }
+
+                            pictureBox1.Refresh(); //Mostra o desenho feito até agora
+
+                            //Espera aos poucos para a janela continuar a responder
+                            do
                             {
-                                tempo = Convert.ToInt32(escrito);
-                                Thread.Sleep(tempo);
-                                continue;
-                            }
+                                Application.DoEvents();
+                                if (this.IsDisposed) { break; } //A janela foi fechada
+                                int bocado = Math.Min(tempo, 20);
+                                Thread.Sleep(bocado);
+                                tempo -= bocado;
+                            } while (tempo > 0);
+
+                            if (this.IsDisposed) { break; }
+                            continue;
                         }
                         catch { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break; }
 
@@ -1878,7 +2084,8 @@ namespace CodeArt_BASIC
                                 primeiro = PontosCodeArt[valores[0]].X;
                                 segundo = PontosCodeArt[valores[0]].Y;
 
-                                if (TextVarCodeArt.ContainsKey(valores[1])) { terceiro = TextVarCodeArt[valores[1]]; }
+                                if (TextureCodeArt.ContainsKey(valores[1])) { terceiro = TextureCodeArt[valores[1]]; }
+                                else if (TextVarCodeArt.ContainsKey(valores[1])) { terceiro = TextVarCodeArt[valores[1]]; }
                                 else { terceiro = valores[1]; }
                             }
                             else
@@ -1962,6 +2169,10 @@ namespace CodeArt_BASIC
                                 }
                                 else { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, Brush does not exist", "CodeArt Error"); break; }
                             }
+                            else
+                            {
+                                MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break;
+                            }
 
                         }
                         catch
@@ -1973,7 +2184,7 @@ namespace CodeArt_BASIC
                     else
                     if (escrito.StartsWith("ClearDraw")) //Limpa Desenho
                     {
-                        pictureBox1.Image = null;
+                        g.Clear(Color.Transparent);
                         continue;
                     }
                     else
@@ -1984,6 +2195,7 @@ namespace CodeArt_BASIC
                         RegexOptions options = RegexOptions.None;
                         Regex regex = new Regex(@"[ ]{2,}", options);
                         escrito = regex.Replace(escrito, @" ");
+                        if (!escrito.Contains("=")) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break; }
 
                         //Obtem o valor de um Number
                         string valor_escrito = escrito.Substring(escrito.LastIndexOf('=') + 1).Trim();
@@ -2049,23 +2261,20 @@ namespace CodeArt_BASIC
                             valor_escrito = valor_escrito.Trim();
 
                             var_nome = var_nome.Trim();
-                            if (var_nome.Contains(" ") || string.IsNullOrWhiteSpace(var_nome)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Number can not be empty or contain spaces", "CodeArt Error"); break; } //Var não pode ter espaços
+                            if (var_nome.Contains(" ") || string.IsNullOrWhiteSpace(var_nome)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Text can not be empty or contain spaces", "CodeArt Error"); break; } //Var não pode ter espaços
                             if (var_nome.All(char.IsDigit)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Text should not only take numbers", "CodeArt Error"); break; }
                             if (!itens_x.IsMatch(var_nome)) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nA name for a Text can not have symbols", "CodeArt Error"); break; }
 
-                            //Text 
-                            foreach (var k in TextVarCodeArt)
+                            //Troca cada palavra pelo valor da Var, só uma vez (~nome fica só como palavra)
+                            valor_escrito = Regex.Replace(valor_escrito, @"~?\b\w+\b", palavra =>
                             {
-                                if (k.Key == var_nome) { continue; }
-                                valor_escrito = Regex.Replace(valor_escrito, @"\b" + k.Key + @"\b", k.Value);
-                            }
-
-                            //Number
-                            foreach (var n in NumberVarCodeAr)
-                            {
-                                if (n.Key == var_nome) { continue; }
-                                valor_escrito = Regex.Replace(valor_escrito, @"\b" + n.Key + @"\b", Convert.ToString(n.Value));
-                            }
+                                string nome = palavra.Value.TrimStart('~');
+                                if (!TextVarCodeArt.ContainsKey(nome) && !NumberVarCodeAr.ContainsKey(nome)) { return palavra.Value; }
+                                if (palavra.Value.StartsWith("~")) { return nome; }
+                                if (nome == var_nome) { return palavra.Value; }
+                                if (TextVarCodeArt.ContainsKey(nome)) { return TextVarCodeArt[nome]; }
+                                return Convert.ToString(NumberVarCodeAr[nome]);
+                            });
 
                             //Se a Var já existe então remove para depois se adicionar de novo
                             if (TextVarCodeArt.ContainsKey(var_nome)) { TextVarCodeArt.Remove(var_nome); }
@@ -2090,6 +2299,7 @@ namespace CodeArt_BASIC
                         RegexOptions options = RegexOptions.None;
                         Regex regex = new Regex(@"[ ]{2,}", options);
                         escrito = regex.Replace(escrito, @" ");
+                        if (!escrito.Contains("=")) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break; }
 
                         string valor_escrito = escrito.Substring(escrito.LastIndexOf('=') + 1).Trim(); //Obtem o Valor da Var
 
@@ -2150,9 +2360,13 @@ namespace CodeArt_BASIC
                     if (escrito.StartsWith("JumpTo"))
                     {
                         int registaV;
-                        escrito = escrito.Substring(6).Trim(); 
-                        if (NumberVarCodeAr.ContainsKey(escrito)) { registaV = NumberVarCodeAr[escrito]; }
-                        else { registaV = Convert.ToInt32(escrito); }
+                        escrito = escrito.Substring(6).Trim();
+                        try
+                        {
+                            if (NumberVarCodeAr.ContainsKey(escrito)) { registaV = NumberVarCodeAr[escrito]; }
+                            else { registaV = Convert.ToInt32(escrito); }
+                        }
+                        catch { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break; }
 
                         if (registaV == linha_marcada || registaV > linhas || registaV <= 0) { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break; } else { topo = registaV - 2; }
                         continue;
@@ -2163,7 +2377,8 @@ namespace CodeArt_BASIC
                     if (escrito.StartsWith("MessageWindow")) //Janela de Texto - Notas
                     {
                         escrito = escrito.Substring(13).Trim();
-                                                
+                        pictureBox1.Refresh(); //Mostra o desenho antes da janela
+
                         if (TextVarCodeArt.ContainsKey(escrito))
                         {
                             MessageWindow TextMessage = new MessageWindow(TextVarCodeArt[escrito],this.Text);
@@ -2380,11 +2595,11 @@ namespace CodeArt_BASIC
                                 if (NumberVarCodeAr.ContainsKey(valores[1])) { ycentro = NumberVarCodeAr[valores[1]]; }
                                 else { ycentro = Convert.ToInt32(valores[1]); }
 
-                                if (NumberVarCodeAr.ContainsKey(valores[2])) { altura = NumberVarCodeAr[valores[2]]; }
-                                else { altura = Convert.ToInt32(valores[2]); }
+                                if (NumberVarCodeAr.ContainsKey(valores[2])) { comprimento = NumberVarCodeAr[valores[2]]; }
+                                else { comprimento = Convert.ToInt32(valores[2]); }
 
-                                if (NumberVarCodeAr.ContainsKey(valores[3])) { comprimento = NumberVarCodeAr[valores[3]]; }
-                                else { comprimento = Convert.ToInt32(valores[3]); }
+                                if (NumberVarCodeAr.ContainsKey(valores[3])) { altura = NumberVarCodeAr[valores[3]]; }
+                                else { altura = Convert.ToInt32(valores[3]); }
 
                                 caneta = valores[4];
                                 caneta = caneta.Trim();
@@ -2398,11 +2613,11 @@ namespace CodeArt_BASIC
                                 xcentro = PontosCodeArt[valores[0]].X;
                                 ycentro = PontosCodeArt[valores[0]].Y;
 
-                                if (NumberVarCodeAr.ContainsKey(valores[1])) { altura = NumberVarCodeAr[valores[2]]; }
-                                else { altura = Convert.ToInt32(valores[1]); }
+                                if (NumberVarCodeAr.ContainsKey(valores[1])) { comprimento = NumberVarCodeAr[valores[1]]; }
+                                else { comprimento = Convert.ToInt32(valores[1]); }
 
-                                if (NumberVarCodeAr.ContainsKey(valores[2])) { comprimento = NumberVarCodeAr[valores[3]]; }
-                                else { comprimento = Convert.ToInt32(valores[2]); }
+                                if (NumberVarCodeAr.ContainsKey(valores[2])) { altura = NumberVarCodeAr[valores[2]]; }
+                                else { altura = Convert.ToInt32(valores[2]); }
 
                                 caneta = valores[3];
                                 caneta = caneta.Trim();
@@ -2452,12 +2667,34 @@ namespace CodeArt_BASIC
                                 escrito = escrito.Replace("(", "");
                                 escrito = escrito.Replace(",", " ");
                                 var valores = escrito.Trim().Split(' ');
+                                Point ponto_fill;
 
-                                if (valores.Length == 3)
+                                if (valores.Length == 4) //X Y Brush Brush
+                                {
+                                    int n1;
+                                    int n2;
+                                    if (NumberVarCodeAr.ContainsKey(valores[0])) { n1 = NumberVarCodeAr[valores[0]]; }
+                                    else { n1 = Convert.ToInt32(valores[0]); }
+
+                                    if (NumberVarCodeAr.ContainsKey(valores[1])) { n2 = NumberVarCodeAr[valores[1]]; }
+                                    else { n2 = Convert.ToInt32(valores[1]); }
+
+                                    ponto_fill = new Point(n1, n2);
+                                    valores = valores.Skip(1).ToArray(); //As Brush ficam nas mesmas posições que com um Point
+                                }
+                                else if (valores.Length == 3) //Point Brush Brush
                                 {
                                     if (!PontosCodeArt.ContainsKey(valores[0]))
                                     { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nThis Point does not exist", "CodeArt Error"); break; }
+                                    ponto_fill = PontosCodeArt[valores[0]];
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, invalid values", "CodeArt Error"); break;
+                                }
 
+                                if (valores.Length == 3)
+                                {
                                     if (BrushCodeArt.ContainsKey(valores[1]))
                                     {
                                         string caneta_valor = BrushCodeArt[valores[1]];
@@ -2486,7 +2723,7 @@ namespace CodeArt_BASIC
                                     }
                                     else { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, Brush does not exist", "CodeArt Error"); break; }
 
-                                    FloodFill(bmp, PontosCodeArt[valores[0]], a, b);
+                                    FloodFill(bmp, ponto_fill, a, b);
                                 }
                             }
                             catch { MessageBox.Show("Line: " + linha_marcada.ToString() + "\nInvalid function, inalid", "CodeArt Error"); break; }
@@ -2546,10 +2783,10 @@ namespace CodeArt_BASIC
                                 primeiro = PontosCodeArt[valores[0]].X;
                                 segundo = PontosCodeArt[valores[0]].Y;
 
-                                if (NumberVarCodeAr.ContainsKey(valores[1])) { terceiro = NumberVarCodeAr[valores[2]]; }
+                                if (NumberVarCodeAr.ContainsKey(valores[1])) { terceiro = NumberVarCodeAr[valores[1]]; }
                                 else { terceiro = Convert.ToInt32(valores[1]); }
 
-                                if (NumberVarCodeAr.ContainsKey(valores[2])) { quarto = NumberVarCodeAr[valores[3]]; }
+                                if (NumberVarCodeAr.ContainsKey(valores[2])) { quarto = NumberVarCodeAr[valores[2]]; }
                                 else { quarto = Convert.ToInt32(valores[2]); }
 
                                 quinto = valores[3];
@@ -2585,6 +2822,8 @@ namespace CodeArt_BASIC
                     }
 
                 }
+
+                if (!this.IsDisposed) { pictureBox1.Refresh(); } //Mostra o desenho final
             }
         }
         private void Form1_Shown(object sender, EventArgs e)
@@ -2603,6 +2842,7 @@ namespace CodeArt_BASIC
 
         static void FloodFill(Bitmap bmp, Point pt, Color targetColor, Color replacementColor)
         {
+            if (ColorMatch(targetColor, replacementColor)) { return; } //Com a mesma cor nunca terminava
             Queue<Point> q = new Queue<Point>();
             q.Enqueue(pt);
             while (q.Count > 0)

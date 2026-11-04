@@ -1,0 +1,44 @@
+// Pôr do sol no mar
+WindowTitle(CodeArt BASIC 0.85)
+
+// Céu em faixas de cor
+Number y = 0
+Number r = 30
+Number g = 20
+Number b = 90
+Repet(ceu,22)
+  Brush faixa = 255 r g b
+  Draw.FilledRectangle 0 y 640 16 faixa
+  Number y = y + 14
+  Number r = r + 10
+  Number g = g + 5
+  Number b = b - 2
+EndRepet ceu
+
+// Sol com brilho
+Pen sol = 255 255 225 130 44
+Draw.Elipse 312 300 22 22 sol
+Pen luz = 16 255 230 160 24
+Number raio = 56
+Repet(brilho,9)
+  Draw.Elipse 312 300 raio raio luz
+  Number raio = raio + 14
+EndRepet brilho
+
+// Ilhas
+Pen ilha = 255 45 22 60 120
+Draw.Elipse 60 350 60 60 ilha
+Draw.Elipse 590 375 60 60 ilha
+
+// Mar e reflexo do sol
+Brush mar = 255 24 30 80
+Draw.FilledRectangle 0 300 640 150 mar
+Pen reflexo = 200 255 200 110 3
+Number y = 308
+Repet(agua,12)
+  RandomNumber largura 20 90
+  Number a = 312 - largura
+  Number c = 312 + largura
+  Draw.Line a y c y reflexo
+  Number y = y + 11
+EndRepet agua

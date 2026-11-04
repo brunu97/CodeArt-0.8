@@ -6,8 +6,8 @@ Draw.Text(Text Var Only,Font Var,Brush Var,Point Var/Number,Number) » Draw text 
 TextToNumber(Text Var Only,Number Var Only) » turn a Text Var to a new or existing Number Var
 NumberToText(Number Var Only,Text Var Onlt) » turn a Number Var to a new or existing Text Var
 Draw.FilledRectangle(Position X/Number/Point,Position Y/Number/Point,Size X/Number,Size Y/Number,Brush Var)
-Texture(Images/Text Var/Text) » Saves a image to a Texture Var
-Draw.FilledTextureRectangle(Position X/Number/Point,Position Y/Number/Point,Size X/Number,Size Y/Number,Brush Var)
+Texture TextureName = Images/Text Var/Text » Saves a image to a Texture Var
+Draw.FilledTextureRectangle(Position X/Number/Point,Position Y/Number/Point,Size X/Number,Size Y/Number,Texture Var)
 Brush BrushName = Opacity Red Green Blue
 PointList PointListName = Points
 WaitForKey.Key » waits for a key, example WaitForKey.A, waits for A to be pressed
@@ -38,14 +38,15 @@ GetTime.Hour(Number Var Only)
 GetPixelColor(Position X/Number/Point,Position Y/Number/Point,Opacity/Number,Red/Number,Green/Number,Blue/Number)
 RandomNumber(Number Var,Min/Number,Max/Number)
 Point PointName = (X/Number,Y/Number)
-If » Compare values 
+If » Compare values (Text compares with Text Var or written text, < > <= >= by alphabetical order, if a Number has the same name the Number is used)
 EndIf
 == =/= <= >= < > Numeric NotNumeric » Operators for If
 ++Number Var 
 --Number Var 
 Number NumberName = Number » calculates and saves values on Number Vars
 Text TextName = Text » operates text ans save values on Text Vars
-Repet(Number,Repet Name) 
+~Name » Inside a Text stays as a word, is not replaced by the Var value
+Repet(Repet Name,Number) 
 EndRepet(Repet Name)
 Pause(Number) » waits X milliseconds
 Draw.Image(Number,Number/Point,Texture Var)
@@ -57,6 +58,6 @@ MessageWindow Text/Number
 Draw.Line(NumberX,NumberY,NumberX,NumberY(or Point,Point),Pen)
 Draw.MultiLines(PointList,Pen)
 Draw.CurvedLine(PointList,Pen)
-Draw.Elipse(CenterX/Number,CenterY/Number(Or Point),length/Number,height/Number, Pen)
+Draw.Elipse(CenterX/Number,CenterY/Number(Or Point),length/Number,height/Number, Pen) » length and height are measured from the center
 FillPoint NumberX,NumberY(Or point),Brush,Brush)
 Draw.Rectangle((Position X/Number/Point,Position Y/Number/Point,Size X/Number,Size Y/Number,Pen)
