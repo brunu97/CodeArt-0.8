@@ -26,7 +26,13 @@ namespace CodeArt_BASIC
         Pen Caneta_para_desenhar;
         Brush corfundo;
 
-        public string ReturnValue1 { get; set; } 
+        //Tecla que o WaitForKey está a esperar
+        char tecla_esperada;
+        bool tecla_tipo;
+        string tecla_especial;
+        bool tecla_carregada;
+
+        public string ReturnValue1 { get; set; }
         string local;
         public Form1(string portado)
         {
@@ -721,8 +727,20 @@ namespace CodeArt_BASIC
                         }
 
                         pictureBox1.Refresh(); //Mostra o desenho antes de esperar pela tecla
-                        Tecla tyu = new Tecla(tecla,tipo,outratecla);
-                        tyu.ShowDialog();
+
+                        //Espera na própria janela, as teclas chegam ao Form1_KeyPress e Form1_KeyDown
+                        tecla_esperada = tecla;
+                        tecla_tipo = tipo;
+                        tecla_especial = outratecla;
+                        tecla_carregada = false;
+                        do
+                        {
+                            Application.DoEvents();
+                            if (this.IsDisposed) { break; } //A janela foi fechada
+                            Thread.Sleep(10);
+                        } while (tecla_carregada == false);
+
+                        if (this.IsDisposed) { break; }
                         continue;
                     }
                     else
@@ -2830,6 +2848,38 @@ namespace CodeArt_BASIC
         {
             richTextBox1.Text = File.ReadAllText(local);
             CodeArtBASIC();
+        }
+
+        //Teclas normais do WaitForKey
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (tecla_tipo == false)
+            {
+                if ((e.KeyChar == tecla_esperada) || (e.KeyChar == char.ToUpper(tecla_esperada)))
+                {
+                    tecla_carregada = true;
+                }
+            }
+        }
+
+        //Enter, Escape e Space do WaitForKey
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (tecla_tipo == true)
+            {
+                if ((e.KeyCode == Keys.Enter) && (tecla_especial == "ENTER"))
+                {
+                    tecla_carregada = true;
+                }
+                if ((e.KeyCode == Keys.Escape) && (tecla_especial == "ESCAPE"))
+                {
+                    tecla_carregada = true;
+                }
+                if ((e.KeyCode == Keys.Space) && (tecla_especial == "SPACE"))
+                {
+                    tecla_carregada = true;
+                }
+            }
         }
 
 
